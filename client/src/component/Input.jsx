@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { uploadMultipleImages } from '../services/Api';
+import { uploadMultipleImages } from '../Services/api';
 
 function App() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -10,7 +10,7 @@ function App() {
     setSelectedFiles(filesArray);
   };
 
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     // Perform any actions with the selectedFiles array, such as uploading to a server.
@@ -21,15 +21,14 @@ function App() {
     });
 
     // Call your API function to upload files
-    // uploadMultipleImages(selectedFiles);
-  };
-
-  const handleButtonClick = async () => {
     try {
       const response = await uploadMultipleImages(selectedFiles);
-      console.log(response);
+      // Display response as a popup message
+      window.alert(`Upload successful: ${JSON.stringify(response)}`);
     } catch (error) {
       console.error('Error uploading images:', error);
+      // Display error message as a popup
+      window.alert(`Error uploading images: ${error.message}`);
     }
   };
 
@@ -51,7 +50,7 @@ function App() {
         </div>
         {/* ... rest of the form ... */}
         <div>
-          <button type="submit" onClick={handleButtonClick}>
+          <button type="submit">
             Upload Images
           </button>
         </div>

@@ -2,15 +2,18 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000'; // Adjust the port as needed
 
-export const uploadMultipleImages = async (files) => {
+export const uploadMultipleImages = async (files, maxFiles = 6) => {
   try {
+    if (files.length > maxFiles) {
+      throw new Error(`Cannot upload more than ${maxFiles} files`);
+    }
+
     const formData = new FormData();
 
     // Append each selected file to the FormData
     files.forEach((file) => {
-        formData.append('file[]', file);
-      });
-      
+      formData.append('file[]', file);
+    });
 
     // Make a POST request to the server endpoint
     const response = await axios.post(`${API_URL}/upload`, formData);
@@ -18,10 +21,11 @@ export const uploadMultipleImages = async (files) => {
     // Check if the response status is within the success range (2xx)
     if (response.status >= 200 && response.status < 300) {
       console.log('Upload successful:', response.data);
+      return response.data
       // You can do something with the response, e.g., update state or show a success message
     } else {
       // Handle unexpected response status
-      console.error('Unexpected response status:', response.status);
+      console.log('Unexpected response status:', response.status);
       throw new Error('Unexpected response status');
     }
   } catch (error) {
